@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useCourses, useAllTasks } from "@/lib/hooks";
 import { HutItem } from "./HutItem";
+import { ParchmentPile } from "./ParchmentPile";
 import { CourseDialog } from "./CourseDialog";
 import type { Course } from "@/lib/db";
 import Image from "next/image";
@@ -23,7 +24,7 @@ export function WizardHut() {
 
   return (
     <div className="relative w-full h-full">
-      {/* Hut background */}
+      {/* Hut background - daytime, hut center, castle right, forest left */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat pixelated"
         style={{
@@ -31,31 +32,20 @@ export function WizardHut() {
         }}
       />
 
-      {/* Dark overlay for better text readability */}
-      <div className="absolute inset-0 bg-black/20" />
+      {/* Light overlay for readability over new daytime background */}
+      <div className="absolute inset-0 bg-black/10" />
 
-      {/* Interactive items */}
-      {courses.map((course) => {
-        const courseTasks = allTasks.filter((t) => t.courseId === course.id);
-        const incompleteTasks = courseTasks.filter((t) => !t.completed);
-        const allComplete =
-          courseTasks.length > 0 && incompleteTasks.length === 0;
+      {/* Parchment piles: hover shows Victorian-style bubble with course/assignment details */}
+      {courses.map((course) => (
+        <ParchmentPile
+          key={course.id}
+          course={course}
+          position={ITEM_POSITIONS[course.slotIndex]}
+          onClick={() => setSelectedCourse(course)}
+        />
+      ))}
 
-        return (
-          <HutItem
-            key={course.id}
-            slotIndex={course.slotIndex}
-            courseCode={course.code}
-            hasIncompleteTasks={incompleteTasks.length > 0}
-            allComplete={allComplete}
-            taskCount={incompleteTasks.length}
-            onClick={() => setSelectedCourse(course)}
-            position={ITEM_POSITIONS[course.slotIndex]}
-          />
-        );
-      })}
-
-      {/* Empty slots */}
+      {/* Empty slots - keep item placeholders */}
       {Array.from({ length: 6 })
         .map((_, i) => i)
         .filter((i) => !courses.find((c) => c.slotIndex === i))
