@@ -11,7 +11,7 @@ interface MascotGreetingProps {
 }
 
 export function MascotGreeting({ name, onContinue }: MascotGreetingProps) {
-  const fullText = `Greetings, ${name}! I am Kiwi the Wise, guardian of knowledge and keeper of quests. Let me help you organize your academic adventures into manageable quests. Together, we shall conquer every assignment, quiz, and exam!`;
+  const fullText = `Greetings, ${name}! I am the Kiwi Wizard. But you can call me Jeff. Let's manage your adventures and quests. Onwards my fellow kiwi`;
 
   const [displayedText, setDisplayedText] = useState("");
   const [isDone, setIsDone] = useState(false);
