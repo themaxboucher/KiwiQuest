@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Volume2, VolumeOff, Scroll, Calendar, Weight } from "lucide-react";
+import { Scroll, Calendar, Weight } from "lucide-react";
+import { AudioToggleButton } from "@/components/AudioToggleButton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -147,8 +148,6 @@ function ScrollDialogContent() {
 }
 
 export function HutActionButtons() {
-  const [muted, setMuted] = useState(false);
-
   return (
     <div className="absolute top-4 right-4 z-20 flex gap-2">
       <Dialog>
@@ -170,15 +169,7 @@ export function HutActionButtons() {
         </DialogContent>
       </Dialog>
 
-      <Button
-        variant="ghost"
-        size="icon-lg"
-        className="size-12 rounded-full bg-card/60 backdrop-blur-sm text-primary hover:bg-card/80"
-        onClick={() => setMuted((prev) => !prev)}
-      >
-        {muted ? <VolumeOff className="size-5" /> : <Volume2 className="size-5" />}
-        <span className="sr-only">{muted ? "Unmute" : "Mute"}</span>
-      </Button>
+      <AudioToggleButton />
     </div>
   );
 }

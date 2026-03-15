@@ -4,13 +4,16 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { db } from "@/lib/db";
 import { Button } from "@/components/ui/button";
+import { useAudio } from "@/components/AudioProvider";
 
 export default function Home() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const { play } = useAudio();
 
   const handleStart = async () => {
     setLoading(true);
+    play();
     const user = await db.user.get(1);
     if (user?.onboardingComplete) {
       router.push("/hut");

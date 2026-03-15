@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { WelcomeStep } from "@/components/onboarding/WelcomeStep";
 import { MascotGreeting } from "@/components/onboarding/MascotGreeting";
 import { UploadOutlines, PostParseMessage } from "@/components/onboarding/UploadOutlines";
+import { AudioToggleButton } from "@/components/AudioToggleButton";
 import { completeOnboarding } from "@/lib/hooks";
 
 const TOTAL_STEPS = 7;
@@ -29,6 +30,11 @@ export default function OnboardingPage() {
 
       {/* Dim overlay so content is readable */}
       <div className="absolute inset-0 bg-black/80" />
+
+      {/* Audio toggle — top right */}
+      <div className="absolute top-4 right-4 z-20">
+        <AudioToggleButton />
+      </div>
 
       {/* Step indicator — click to navigate to any step */}
       <div className="absolute top-6 left-1/2 z-20 flex -translate-x-1/2 gap-2">

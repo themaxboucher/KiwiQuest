@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Press_Start_2P, Inter } from "next/font/google";
+import { AudioProvider } from "@/components/AudioProvider";
 import "./globals.css";
 
 const pixelFont = Press_Start_2P({
@@ -28,7 +29,9 @@ export default function RootLayout({
       <body
         className={`${pixelFont.variable} ${inter.variable} font-sans antialiased`}
       >
-        {children}
+        <AudioProvider>
+          {children}
+        </AudioProvider>
       </body>
     </html>
   );
