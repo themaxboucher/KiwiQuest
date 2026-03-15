@@ -1,34 +1,18 @@
-import { NextRequest, NextResponse } from "next/server";
+"use server";
+
 import { callOpenRouter } from "@/lib/openrouter";
 import { PDFParse } from "pdf-parse";
 
-export async function POST(request: NextRequest) {
-  try {
-    const formData = await request.formData();
-    const file = formData.get("file") as File | null;
-    const coursesJson = formData.get("courses") as string | null;
+export interface ParsedTask {
+  courseCode: string;
+  title: string;
+  type: "assignment" | "lab" | "quiz" | "midterm" | "final";
+  dueDate: string | null;
+  description: string;
+  weight: number | null;
+}
 
-    if (!file || !coursesJson) {
-      return NextResponse.json(
-        { error: "Missing file or courses data" },
-        { status: 400 },
-      );
-    }
-
-    const courses = JSON.parse(coursesJson) as {
-      code: string;
-      description: string;
-    }[];
-
-    const arrayBuffer = await file.arrayBuffer();
-    const data = new Uint8Array(arrayBuffer);
-
-    const parser = new PDFParse({ data });
-    const textResult = await parser.getText();
-    const pdfText = textResult.text;
-    await parser.destroy();
-
-    const systemPrompt = `You are a course outline parser. Extract all assignments, labs, quizzes, midterms, finals, and other graded deliverables from the provided course outline text.
+const SYSTEM_PROMPT = `You are a course outline parser. Extract all assignments, labs, quizzes, midterms, finals, and other graded deliverables from the provided course outline text.
 
 IMPORTANT: When the outline lists a category as a single aggregate entry (e.g. "Assignments: 30%", "Labs: 20%") without enumerating each one individually, you MUST expand it into 12 separate numbered items. For example:
 - "Assignments: 30%" becomes Assignment 1, Assignment 2, … Assignment 12 — each worth 30/12 = 2.5%.
@@ -53,8 +37,27 @@ Return a JSON array of task objects. Each task must have:
 
 Return ONLY a valid JSON array, no markdown or explanation.`;
 
+export async function parseOutline(
+  formData: FormData
+): Promise<{ tasks: ParsedTask[] }> {
+  try {
+    const file = formData.get("file") as File | null;
+    const coursesJson = formData.get("courses") as string | null;
+
+    if (!file || !coursesJson) {
+      throw new Error("Missing file or courses data");
+    }
+
+    const arrayBuffer = await file.arrayBuffer();
+    const data = new Uint8Array(arrayBuffer);
+
+    const parser = new PDFParse({ data });
+    const textResult = await parser.getText();
+    const pdfText = textResult.text;
+    await parser.destroy();
+
     const result = await callOpenRouter([
-      { role: "system", content: systemPrompt },
+      { role: "system", content: SYSTEM_PROMPT },
       { role: "user", content: pdfText.slice(0, 15000) },
     ]);
 
@@ -62,17 +65,13 @@ Return ONLY a valid JSON array, no markdown or explanation.`;
       .replace(/```json\s*/g, "")
       .replace(/```\s*/g, "")
       .trim();
-    const tasks = JSON.parse(cleaned);
+    const tasks = JSON.parse(cleaned) as ParsedTask[];
 
-    return NextResponse.json({ tasks });
+    return { tasks };
   } catch (error) {
     console.error("Parse outline error:", error);
-    return NextResponse.json(
-      {
-        error:
-          error instanceof Error ? error.message : "Failed to parse outline",
-      },
-      { status: 500 },
+    throw new Error(
+      error instanceof Error ? error.message : "Failed to parse outline"
     );
   }
 }

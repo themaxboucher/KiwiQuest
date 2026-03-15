@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { addCourse, addTask, clearAllData } from "@/lib/hooks";
+import { parseOutline } from "@/lib/actions/parseOutline";
 import { AlertCircle, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { KiwizardSprite } from "@/components/KiwizardSprite";
@@ -54,15 +55,6 @@ export function PostParseMessage({ onComplete }: { onComplete: () => void }) {
       </div>
     </div>
   );
-}
-
-interface ParsedTask {
-  courseCode: string;
-  title: string;
-  type: "assignment" | "lab" | "quiz" | "midterm" | "final";
-  dueDate: string | null;
-  description: string;
-  weight: number | null;
 }
 
 interface UploadOutlinesProps {
@@ -148,17 +140,7 @@ export function UploadOutlines({ onComplete }: UploadOutlinesProps) {
         formData.append("file", file);
         formData.append("courses", JSON.stringify(coursesData));
 
-        const res = await fetch("/api/parse-outline", {
-          method: "POST",
-          body: formData,
-        });
-
-        if (!res.ok) {
-          const data = await res.json();
-          throw new Error(data.error || "Failed to parse");
-        }
-
-        const { tasks } = (await res.json()) as { tasks: ParsedTask[] };
+        const { tasks } = await parseOutline(formData);
 
         for (const task of tasks) {
           await addTask({
