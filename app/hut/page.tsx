@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { db } from "@/lib/db";
 import { WizardHut } from "@/components/hut/WizardHut";
-import { TopBar } from "@/components/hut/TopBar";
 
 export default function HutPage() {
   const router = useRouter();
@@ -34,7 +33,6 @@ export default function HutPage() {
 
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-background">
-      <TopBar />
       <WizardHut />
     </div>
   );
