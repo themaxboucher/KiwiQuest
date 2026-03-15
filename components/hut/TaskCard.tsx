@@ -102,7 +102,7 @@ export function TaskCard({ task }: TaskCardProps) {
           {!task.completed && (
             <Button
               onClick={toggleComplete}
-              className="w-full font-pixel text-[8px] pixel-borders-gold bg-green-700 text-white hover:bg-green-600 cursor-pointer"
+              className="w-full bg-green-700 text-white hover:bg-green-600"
               size="sm"
             >
               <CheckCircle2 size={12} className="mr-1" />

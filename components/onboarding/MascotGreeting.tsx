@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { PixelContainer } from "@/components/PixelContainer";
 import Image from "next/image";
 
 interface MascotGreetingProps {
@@ -11,7 +10,7 @@ interface MascotGreetingProps {
 }
 
 export function MascotGreeting({ name, onContinue }: MascotGreetingProps) {
-  const fullText = `Greetings, ${name}! I am Kiwi the Wise, guardian of knowledge and keeper of quests. Let me help you organize your academic adventures into manageable quests. Together, we shall conquer every assignment, quiz, and exam!`;
+  const fullText = `Greetings, ${name}! I am Kiwi the Wise, guardian of knowledge and keeper of quests. Let me help you organize your academic adventures into manageable quests.`;
 
   const [displayedText, setDisplayedText] = useState("");
   const [isDone, setIsDone] = useState(false);
@@ -36,41 +35,32 @@ export function MascotGreeting({ name, onContinue }: MascotGreetingProps) {
   };
 
   return (
-    <PixelContainer gold className="flex flex-col items-center gap-6">
-      <Image
-        src="/sprites/kiwi-wizard.png"
-        alt="Kiwi the Wise"
-        width={200}
-        height={200}
-        className="pixelated animate-float"
-      />
+    <div className="flex flex-col items-center gap-12">
+      <div className="flex justify-center items-center gap-12">
+        <div
+          className="p-4 w-full min-h-[120px] cursor-pointer"
+          onClick={!isDone ? skipToEnd : undefined}
+        >
+          <p className="min-w-[432px] h-[224px] font-pixel text-white leading-loose">
+            {displayedText}
+            {!isDone && (
+              <span className="animate-typewriter-cursor inline-block ml-0.5 w-2 h-3 bg-primary align-middle" />
+            )}
+          </p>
+        </div>
 
-      <div
-        className="pixel-borders bg-background p-4 w-full min-h-[120px] cursor-pointer"
-        onClick={!isDone ? skipToEnd : undefined}
-      >
-        <p className="font-pixel text-[10px] text-foreground leading-[2]">
-          {displayedText}
-          {!isDone && (
-            <span className="animate-typewriter-cursor inline-block ml-0.5 w-2 h-3 bg-primary align-middle" />
-          )}
-        </p>
+        <Image
+          src="/sprites/kiwi-wizard.png"
+          alt="Kiwi the Wise"
+          width={200}
+          height={200}
+          className="pixelated animate-float drop-shadow-[0_0_12px_rgba(200,170,80,0.4)]"
+        />
       </div>
 
-      {!isDone && (
-        <p className="font-pixel text-[8px] text-muted-foreground">
-          Click to skip...
-        </p>
-      )}
-
-      {isDone && (
-        <Button
-          onClick={onContinue}
-          className="font-pixel text-[10px] pixel-borders-gold bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer"
-        >
-          Let&apos;s Begin!
-        </Button>
-      )}
-    </PixelContainer>
+      <Button onClick={onContinue} disabled={!isDone}>
+        Continue
+      </Button>
+    </div>
   );
 }
