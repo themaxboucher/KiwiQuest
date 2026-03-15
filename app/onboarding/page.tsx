@@ -1,19 +1,23 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { WelcomeStep } from "@/components/onboarding/WelcomeStep";
 import { MascotGreeting } from "@/components/onboarding/MascotGreeting";
-import { AddCourses } from "@/components/onboarding/AddCourses";
-import { UploadOutlines } from "@/components/onboarding/UploadOutlines";
-import { ConfirmTasks } from "@/components/onboarding/ConfirmTasks";
+import { UploadOutlines, PostParseMessage } from "@/components/onboarding/UploadOutlines";
+import { completeOnboarding } from "@/lib/hooks";
 
-const TOTAL_STEPS = 5;
+const TOTAL_STEPS = 7;
 
 export default function OnboardingPage() {
+  const router = useRouter();
   const [step, setStep] = useState(0);
   const [playerName, setPlayerName] = useState("");
 
-  const next = () => setStep((s) => Math.min(s + 1, TOTAL_STEPS - 1));
+  const handleFinalComplete = () => {
+    completeOnboarding();
+    router.push("/hut");
+  };
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden">
@@ -24,7 +28,7 @@ export default function OnboardingPage() {
       />
 
       {/* Dim overlay so content is readable */}
-      <div className="absolute inset-0 bg-black/70" />
+      <div className="absolute inset-0 bg-black/80" />
 
       {/* Step indicator — click to navigate to any step */}
       <div className="absolute top-6 left-1/2 z-20 flex -translate-x-1/2 gap-2">
@@ -43,23 +47,29 @@ export default function OnboardingPage() {
         ))}
       </div>
 
-      {/* Step content — overlayed directly on the background */}
-      <div
-        className="relative z-10 w-full max-w-180 px-4 animate-in fade-in slide-in-from-bottom-4 duration-500"
-        key={step}
-      >
+      {/* Step content — overlayed directly on the background. No key so Kiwi stays mounted when only paragraph changes (steps 1–4). */}
+      <div className="relative z-10 w-full max-w-180 px-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
         {step === 0 && (
           <WelcomeStep
             onComplete={(name) => {
               setPlayerName(name);
-              next();
+              setStep(1);
             }}
           />
         )}
-        {step === 1 && <MascotGreeting name={playerName} onContinue={next} />}
-        {step === 2 && <AddCourses onComplete={next} />}
-        {step === 3 && <UploadOutlines onComplete={next} />}
-        {step === 4 && <ConfirmTasks />}
+        {step >= 1 && step <= 4 && (
+          <MascotGreeting
+            paragraphIndex={step - 1}
+            name={playerName}
+            onNext={() => setStep(step + 1)}
+          />
+        )}
+        {step === 5 && (
+          <UploadOutlines onComplete={() => setStep(6)} />
+        )}
+        {step === 6 && (
+          <PostParseMessage onComplete={handleFinalComplete} />
+        )}
       </div>
     </div>
   );

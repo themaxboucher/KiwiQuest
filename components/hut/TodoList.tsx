@@ -114,10 +114,9 @@ export function TodoList({
 
       <Button
         size="sm"
-        variant="secondary"
+        variant="outline"
         onClick={handleGenerate}
         disabled={generating}
-        variant="outline"
         className="w-full h-7 text-[7px]"
       >
         {generating ? (
