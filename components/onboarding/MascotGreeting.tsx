@@ -8,7 +8,7 @@ const TYPEWRITER_MS = 30;
 
 const PARAGRAPHS = [
   (name: string) =>
-    `Greetings young ${name}. The road has been long and your trial many. Evil is everywhere. I sense much is pressing on your mind. These burdens needn't be carried by you alone.`,
+    `Greetings brave ${name}. The road has been long and your trials many. Evil is everywhere. I sense much is pressing on your mind. These burdens needn't be carried by you alone.`,
   () =>
     `I have been sent by his majesty the King Kiwi himself to guide you on your journey. I have travelled far and wide and have mastered the secret arts to bend time and space itself.`,
   () =>
