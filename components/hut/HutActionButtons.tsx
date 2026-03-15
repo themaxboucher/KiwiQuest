@@ -92,6 +92,7 @@ function ScrollDialogContent() {
   const [selectedCourseId, setSelectedCourseId] = useState<number | undefined>(
     undefined
   );
+  const tasks = useTasksForCourse(selectedCourseId);
 
   useEffect(() => {
     if (courses.length > 0 && selectedCourseId === undefined) {
@@ -99,13 +100,17 @@ function ScrollDialogContent() {
     }
   }, [courses, selectedCourseId]);
 
+  const completedCount = tasks.filter((t) => t.completed).length;
+  const totalCount = tasks.length;
+  const progressPercent = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
+
   return (
     <>
       <DialogHeader>
-        <DialogTitle className="font-pixel font-bold uppercase text-xl text-primary pixel-text-shadow">
+        <DialogTitle className="font-pixel font-bold uppercase text-xl text-primary pixel-text-shadow text-center">
           QUEST LOG
         </DialogTitle>
-        <DialogDescription className="font-pixel text-[10px] text-amber-800/70">
+        <DialogDescription className="font-pixel text-[10px] text-amber-800/70 text-center">
           Your quests and the beasts that guard them.
         </DialogDescription>
       </DialogHeader>
@@ -118,7 +123,7 @@ function ScrollDialogContent() {
         </div>
       ) : (
         <>
-          <div className="flex gap-1 overflow-x-auto pb-1 -mx-1 px-1" role="tablist">
+          <div className="flex gap-1 overflow-x-auto pb-1 -mx-1 px-1 justify-center" role="tablist">
             {courses.map((course) => (
               <button
                 key={course.id}
@@ -135,6 +140,29 @@ function ScrollDialogContent() {
               </button>
             ))}
           </div>
+
+          {selectedCourseId !== undefined && totalCount > 0 && (
+            <div className="space-y-1">
+              <div className="flex justify-between font-pixel text-[8px] text-amber-800/70">
+                <span>Progress</span>
+                <span>
+                  {completedCount} / {totalCount}
+                </span>
+              </div>
+              <div
+                className="h-2 w-full overflow-hidden rounded-full bg-amber-900/20"
+                role="progressbar"
+                aria-valuenow={progressPercent}
+                aria-valuemin={0}
+                aria-valuemax={100}
+              >
+                <div
+                  className="h-full rounded-full bg-green-600 transition-[width] duration-300 ease-out"
+                  style={{ width: `${progressPercent}%` }}
+                />
+              </div>
+            </div>
+          )}
 
           <ScrollArea className="max-h-[50vh] -mx-4 px-4">
             {selectedCourseId !== undefined && (

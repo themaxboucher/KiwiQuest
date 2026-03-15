@@ -92,12 +92,7 @@ export function TaskCard({ task }: TaskCardProps) {
             </p>
           )}
 
-          <TodoList
-            taskId={task.id!}
-            taskTitle={task.title}
-            taskDescription={task.description}
-            taskType={task.type}
-          />
+          <TodoList taskId={task.id!} />
 
           {!task.completed && (
             <Button

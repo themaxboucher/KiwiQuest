@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { CrystalBallHoverCard } from "./CrystalBallDialog";
+import { NewQuest } from "./NewQuest";
 import { HutActionButtons } from "./HutActionButtons";
 import { KiwizardSprite } from "@/components/KiwizardSprite";
 
@@ -28,7 +28,7 @@ export function WizardHut() {
         className="absolute z-10 cursor-pointer transition-transform duration-200 focus-visible:outline-none hover:animate-glow-pulse"
         style={{ top: "50%", left: "50%", transform: "translateX(-50%)" }}
       >
-        <CrystalBallHoverCard>
+        <NewQuest>
           <Image
             src="/sprites/crystal_ball.png"
             alt="Crystal Ball"
@@ -36,7 +36,7 @@ export function WizardHut() {
             height={360}
             className="pixelated animate-glow-pulse"
           />
-        </CrystalBallHoverCard>
+        </NewQuest>
       </div>
     </div>
   );

@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
     if (!file || !coursesJson) {
       return NextResponse.json(
         { error: "Missing file or courses data" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -28,22 +28,28 @@ export async function POST(request: NextRequest) {
     const pdfText = textResult.text;
     await parser.destroy();
 
-    const courseList = courses
-      .map((c) => `- ${c.code}: ${c.description}`)
-      .join("\n");
-
     const systemPrompt = `You are a course outline parser. Extract all assignments, labs, quizzes, midterms, finals, and other graded deliverables from the provided course outline text.
 
-The student is taking these courses:
-${courseList}
+IMPORTANT: When the outline lists a category as a single aggregate entry (e.g. "Assignments: 30%", "Labs: 20%") without enumerating each one individually, you MUST expand it into 12 separate numbered items. For example:
+- "Assignments: 30%" becomes Assignment 1, Assignment 2, … Assignment 12 — each worth 30/12 = 2.5%.
+- "Labs: 20%" becomes Lab 1, Lab 2, … Lab 12 — each worth 20/12 ≈ 1.67%.
+If the outline explicitly lists the individual items with their own titles or due dates, use those instead.
+Midterms and finals should NOT be expanded — keep them as single entries.
 
 Return a JSON array of task objects. Each task must have:
-- "courseCode": string (must match one of the course codes listed above)
-- "title": string (name of the deliverable)
+- "courseCode": string (e.g. "CS101")
+- "title": string (e.g. "Assignment 1", "Lab 5", "Midterm")
 - "type": one of "assignment", "lab", "quiz", "midterm", or "final"
 - "dueDate": string in ISO format (YYYY-MM-DD) or null if not specified
-- "description": string (brief description of the task)
-- "weight": number (percentage weight) or null if not specified
+- "description": string — a short, fun fantasy-themed flavor description of the task as a monster encounter. Use the following creature mapping:
+  * assignments → Orcs
+  * quizzes → Trolls
+  * labs → Slime Monsters
+  * midterms → Dark Knights
+  * finals → Dragons
+  Write 1 sentences in a dramatic fantasy tone describing the creature and the threat it poses. Each description should be unique and creative. For example: "A hulking orc scout sharpens its blade in the shadows, eager to ambush any kiwi that strays from the path." or "This ancient dragon hoards knowledge and flames — only the bravest kiwi can hope to survive its wrath."
+- "weight": number (percentage weight of this individual item) or null if not specified
+- "completed": false (always false for newly parsed tasks)
 
 Return ONLY a valid JSON array, no markdown or explanation.`;
 
@@ -62,8 +68,11 @@ Return ONLY a valid JSON array, no markdown or explanation.`;
   } catch (error) {
     console.error("Parse outline error:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to parse outline" },
-      { status: 500 }
+      {
+        error:
+          error instanceof Error ? error.message : "Failed to parse outline",
+      },
+      { status: 500 },
     );
   }
 }
