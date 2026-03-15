@@ -12,7 +12,7 @@ const PARAGRAPHS = [
   () =>
     `I have been sent by his majesty the King Kiwi himself to guide you on your journey. I have travelled far and wide and have mastered the secret arts to bend time and space itself.`,
   () =>
-    `These powers I use to fight evil and bring peace and justice to all kiwis. In this relm, I am known as KIWIZARD, but my friends call me Jeff.`,
+    `These powers I use to fight evil and bring peace and justice to all kiwis. In this realm, I am known as KIWIZARD, but my friends call me Jeff.`,
   () =>
     `I have received word you carry documents enchanted by a very dark magic: course outlines. These scriptures tell of many foe who must be vanquished, lest peril befall us all. Quick, hand them here. My magic table can decipher them.`,
 ];
