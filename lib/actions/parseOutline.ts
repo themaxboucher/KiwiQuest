@@ -1,7 +1,7 @@
 "use server";
 
 import { callOpenRouter } from "@/lib/openrouter";
-import { PDFParse } from "pdf-parse";
+import { extractText, getDocumentProxy } from "unpdf";
 
 export interface ParsedTask {
   courseCode: string;
@@ -51,10 +51,8 @@ export async function parseOutline(
     const arrayBuffer = await file.arrayBuffer();
     const data = new Uint8Array(arrayBuffer);
 
-    const parser = new PDFParse({ data });
-    const textResult = await parser.getText();
-    const pdfText = textResult.text;
-    await parser.destroy();
+    const pdf = await getDocumentProxy(data);
+    const { text: pdfText } = await extractText(pdf, { mergePages: true });
 
     const result = await callOpenRouter([
       { role: "system", content: SYSTEM_PROMPT },
