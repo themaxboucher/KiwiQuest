@@ -169,3 +169,31 @@
 .animate-glow-blue {
   animation: glow-blue 3s ease-in-out infinite;
 }
+
+/* Quest complete exit animation (preserves left-1/2 centering) */
+@keyframes quest-exit {
+  to {
+    opacity: 0;
+    transform: translate(-50%, 0) scale(0.92);
+  }
+}
+
+.animate-quest-exit {
+  animation: quest-exit 0.6s ease-out forwards;
+}
+
+/* Blue particle burst from center of container (no origin calc) */
+@keyframes particle-out-from-center {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--px-end-x)), calc(-50% + var(--px-end-y))) scale(0.3);
+  }
+}
+
+.animate-particle-out {
+  animation: particle-out-from-center 800ms ease-out forwards;
+}

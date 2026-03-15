@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Image from "next/image";
 import { Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +9,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useNearestTask, useCourses, updateTask } from "@/lib/hooks";
 import { SPRITE_BY_TYPE } from "@/lib/sprites";
 import { TodoList } from "./TodoList";
+import { BlueParticleBurst } from "./BlueParticleBurst";
+
+const EXIT_DURATION_MS = 700;
+type TaskPreviewTask = NonNullable<ReturnType<typeof useNearestTask>>;
 
 function getRelativeDate(dateStr: string) {
   const now = new Date();
@@ -43,8 +47,10 @@ function EmptyState() {
 
 function TaskPreview({
   task,
+  onCompleteQuest,
 }: {
-  task: NonNullable<ReturnType<typeof useNearestTask>>;
+  task: TaskPreviewTask;
+  onCompleteQuest?: (task: TaskPreviewTask) => void;
 }) {
   const courses = useCourses();
   const course = courses.find((c) => c.id === task.courseId);
@@ -109,7 +115,7 @@ function TaskPreview({
 
       <Button
         size="sm"
-        onClick={() => task.id && updateTask(task.id, { completed: true })}
+        onClick={() => (onCompleteQuest ? onCompleteQuest(task) : task.id && updateTask(task.id, { completed: true }))}
         className="w-full"
       >
         Complete Quest
@@ -120,7 +126,28 @@ function TaskPreview({
 
 export function NewQuest({ children }: NewQuestProps) {
   const [hovered, setHovered] = useState(false);
+  const [isExiting, setIsExiting] = useState(false);
+  const [exitingTask, setExitingTask] = useState<TaskPreviewTask | null>(null);
+  const [showParticles, setShowParticles] = useState(false);
   const task = useNearestTask();
+
+  const handleCompleteQuest = useCallback(
+    (completedTask: TaskPreviewTask) => {
+      if (isExiting || !completedTask.id) return;
+      setExitingTask(completedTask);
+      setShowParticles(true);
+      setIsExiting(true);
+      setTimeout(() => {
+        updateTask(completedTask.id!, { completed: true });
+        setIsExiting(false);
+        setExitingTask(null);
+      }, EXIT_DURATION_MS);
+    },
+    [isExiting]
+  );
+
+  const showPopover = hovered || isExiting;
+  const displayTask = isExiting && exitingTask ? exitingTask : task;
 
   return (
     <div
@@ -128,16 +155,27 @@ export function NewQuest({ children }: NewQuestProps) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {children}
+      <div className="relative">
+        {children}
+        {showParticles && (
+          <BlueParticleBurst onComplete={() => setShowParticles(false)} />
+        )}
+      </div>
 
       <div
-        className={`absolute bottom-full left-1/2 -translate-x-1/2 w-120 rounded-2xl bg-blue-950/60 backdrop-blur-md p-6 shadow-[0_0_60px_20px_rgba(23,37,84,0.7),0_0_100px_40px_rgba(23,37,84,0.4)] animate-glow-blue transition-all duration-200 ${
-          hovered
+        className={`absolute bottom-full left-1/2 -translate-x-1/2 w-120 rounded-2xl bg-blue-950/60 backdrop-blur-md p-6 shadow-[0_0_60px_20px_rgba(23,37,84,0.7),0_0_100px_40px_rgba(23,37,84,0.4)] transition-all duration-200 ${
+          isExiting ? "animate-quest-exit" : "animate-glow-blue"
+        } ${
+          showPopover
             ? "opacity-100 translate-y-0"
             : "opacity-0 translate-y-2 pointer-events-none"
         }`}
       >
-        {task ? <TaskPreview task={task} /> : <EmptyState />}
+        {displayTask ? (
+          <TaskPreview task={displayTask} onCompleteQuest={handleCompleteQuest} />
+        ) : (
+          <EmptyState />
+        )}
       </div>
     </div>
   );
