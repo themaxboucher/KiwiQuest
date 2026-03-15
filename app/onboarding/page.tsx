@@ -16,38 +16,38 @@ export default function OnboardingPage() {
   const next = () => setStep((s) => Math.min(s + 1, TOTAL_STEPS - 1));
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background p-4">
-      {/* Starfield background */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        {Array.from({ length: 40 }).map((_, i) => (
-          <div
-            key={i}
-            className="absolute h-1 w-1 rounded-full bg-primary/30"
-            style={{
-              left: `${(i * 37 + 13) % 100}%`,
-              top: `${(i * 53 + 7) % 100}%`,
-              animationDelay: `${(i * 0.3) % 3}s`,
-              animation: `glow-pulse ${2 + (i % 3)}s ease-in-out infinite`,
-            }}
-          />
-        ))}
-      </div>
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden">
+      {/* Full-screen pixelated fantasy background */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat pixelated"
+        style={{ backgroundImage: "url(/sprites/onboarding-bg-day.png)" }}
+      />
 
-      {/* Step indicator */}
-      <div className="absolute top-6 left-1/2 flex -translate-x-1/2 gap-2">
+      {/* Dim overlay so content is readable */}
+      <div className="absolute inset-0 bg-black/70" />
+
+      {/* Step indicator — click to navigate to any step */}
+      <div className="absolute top-6 left-1/2 z-20 flex -translate-x-1/2 gap-2">
         {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
-          <div
+          <button
+            type="button"
             key={i}
-            className={`h-2 w-8 transition-all duration-300 ${
+            onClick={() => setStep(i)}
+            aria-label={`Go to step ${i + 1} of ${TOTAL_STEPS}`}
+            className={`h-2 w-8 transition-all duration-300 cursor-pointer hover:opacity-90 ${
               i <= step
                 ? "bg-primary pixel-borders-gold"
-                : "bg-muted pixel-borders"
+                : "bg-black/40 pixel-borders"
             }`}
           />
         ))}
       </div>
 
-      <div className="relative z-10 w-full max-w-2xl animate-in fade-in slide-in-from-bottom-4 duration-500" key={step}>
+      {/* Step content — overlayed directly on the background */}
+      <div
+        className="relative z-10 w-full max-w-180 px-4 animate-in fade-in slide-in-from-bottom-4 duration-500"
+        key={step}
+      >
         {step === 0 && (
           <WelcomeStep
             onComplete={(name) => {

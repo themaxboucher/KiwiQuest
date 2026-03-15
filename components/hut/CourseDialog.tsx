@@ -40,7 +40,7 @@ export function CourseDialog({ course, open, onClose }: CourseDialogProps) {
             <span>{course.code}</span>
           </DialogTitle>
           <p className="font-pixel text-[8px] text-muted-foreground">
-            {course.description}
+            {course.description || course.code}
           </p>
           <div className="flex items-center gap-2 pt-1">
             <div className="flex-1 h-2 pixel-borders bg-muted overflow-hidden">
