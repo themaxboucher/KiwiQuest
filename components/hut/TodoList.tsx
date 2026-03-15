@@ -117,7 +117,8 @@ export function TodoList({
         variant="secondary"
         onClick={handleGenerate}
         disabled={generating}
-        className="w-full h-7 font-pixel text-[7px] pixel-borders cursor-pointer"
+        variant="outline"
+        className="w-full h-7 text-[7px]"
       >
         {generating ? (
           <>

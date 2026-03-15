@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { PixelContainer } from "@/components/PixelContainer";
 import {
   useCourses,
   useAllTasks,
@@ -57,12 +56,12 @@ export function ConfirmTasks() {
   };
 
   return (
-    <PixelContainer gold className="flex flex-col gap-6 max-h-[80vh] overflow-y-auto">
+    <div className="flex flex-col gap-6 max-h-[80vh] overflow-y-auto">
       <div className="text-center space-y-2">
-        <h2 className="font-pixel text-sm text-primary pixel-text-shadow">
+        <h2 className="font-pixel text-2xl text-primary pixel-text-shadow">
           Confirm Your Quests
         </h2>
-        <p className="font-pixel text-[8px] text-muted-foreground leading-relaxed">
+        <p className="font-pixel text-[10px] text-white leading-relaxed">
           Review the extracted tasks. You can edit, delete, or add new ones.
         </p>
       </div>
@@ -73,7 +72,7 @@ export function ConfirmTasks() {
             <h3 className="font-pixel text-[10px] text-accent">
               {course.code}
             </h3>
-            <span className="font-pixel text-[8px] text-muted-foreground">
+            <span className="font-pixel text-[8px] text-white/50">
               ({courseTasks.length} quests)
             </span>
           </div>
@@ -82,19 +81,19 @@ export function ConfirmTasks() {
             {courseTasks.map((task) => (
               <div
                 key={task.id}
-                className="flex items-center gap-2 pixel-borders bg-background px-3 py-2"
+                className="flex items-center gap-2 pixel-borders bg-black/40 px-3 py-2"
               >
                 <Badge
                   variant="outline"
-                  className={`font-pixel text-[7px] shrink-0 ${TYPE_COLORS[task.type] || ""}`}
+                  className={`font-pixel text-[7px] shrink-0 rounded-sm uppercase ${TYPE_COLORS[task.type] || ""}`}
                 >
                   {task.type}
                 </Badge>
-                <span className="font-pixel text-[8px] text-foreground flex-1 truncate">
+                <span className="font-pixel text-[8px] text-white/90 flex-1 truncate">
                   {task.title}
                 </span>
                 {task.dueDate && (
-                  <span className="font-pixel text-[7px] text-muted-foreground shrink-0">
+                  <span className="font-pixel text-[7px] text-white/50 shrink-0">
                     {new Date(task.dueDate).toLocaleDateString()}
                   </span>
                 )}
@@ -113,13 +112,13 @@ export function ConfirmTasks() {
             ))}
 
             {adding === course.id ? (
-              <div className="flex gap-2 pixel-borders bg-background p-2">
+              <div className="flex gap-2 pixel-borders bg-black/40 p-2">
                 <select
                   value={newTask.type}
                   onChange={(e) =>
                     setNewTask({ ...newTask, type: e.target.value as Task["type"] })
                   }
-                  className="pixel-borders bg-muted font-pixel text-[8px] px-2 py-1 text-foreground"
+                  className="pixel-borders bg-black/50 font-pixel text-[8px] px-2 py-1 text-white"
                 >
                   <option value="assignment">Assignment</option>
                   <option value="quiz">Quiz</option>
@@ -136,13 +135,12 @@ export function ConfirmTasks() {
                     e.key === "Enter" && handleAddTask(course.id!)
                   }
                   placeholder="Task title..."
-                  className="flex-1 pixel-borders bg-muted font-pixel text-[8px]"
+                  className="flex-1 pixel-borders bg-black/30 font-pixel text-[8px] text-white placeholder:text-white/30 border-none"
                   autoFocus
                 />
                 <Button
                   size="sm"
                   onClick={() => handleAddTask(course.id!)}
-                  className="font-pixel text-[8px] pixel-borders-gold bg-primary text-primary-foreground cursor-pointer"
                 >
                   Add
                 </Button>
@@ -150,7 +148,7 @@ export function ConfirmTasks() {
             ) : (
               <button
                 onClick={() => setAdding(course.id!)}
-                className="flex items-center gap-1 text-muted-foreground hover:text-foreground font-pixel text-[8px] py-1 cursor-pointer"
+                className="flex items-center gap-1 text-white/50 hover:text-white/80 font-pixel text-[8px] py-1 cursor-pointer"
               >
                 <Plus size={12} />
                 Add quest
@@ -162,8 +160,8 @@ export function ConfirmTasks() {
 
       {tasks.length === 0 && (
         <div className="text-center py-8">
-          <Sparkles className="mx-auto mb-2 text-muted-foreground" size={24} />
-          <p className="font-pixel text-[8px] text-muted-foreground">
+          <Sparkles className="mx-auto mb-2 text-white/40" size={24} />
+          <p className="font-pixel text-[10px] text-white/50">
             No quests yet. Add some manually or go back and upload outlines.
           </p>
         </div>
@@ -172,10 +170,9 @@ export function ConfirmTasks() {
       <Button
         onClick={handleFinish}
         disabled={finishing}
-        className="w-full font-pixel text-[10px] pixel-borders-gold bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer"
       >
         {finishing ? "Entering the hut..." : "Confirm & Enter the Hut"}
       </Button>
-    </PixelContainer>
+    </div>
   );
 }

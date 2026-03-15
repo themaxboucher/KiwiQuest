@@ -28,7 +28,7 @@ export function WizardHut() {
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat pixelated"
         style={{
-          backgroundImage: "url(/sprites/hut-background.png)",
+          backgroundImage: "url(/sprites/hut-background-day.png)",
         }}
       />
 
