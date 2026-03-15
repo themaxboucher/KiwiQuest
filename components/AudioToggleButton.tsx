@@ -11,7 +11,7 @@ export function AudioToggleButton() {
     <Button
       variant="ghost"
       size="icon-lg"
-      className="size-12 rounded-full bg-card/60 backdrop-blur-sm text-primary hover:bg-card/80"
+      className="size-12 rounded-full bg-card/60 backdrop-blur-sm text-primary hover:bg-card/80 relative z-10000"
       onClick={toggle}
     >
       {playing ? <Volume2 className="size-5" /> : <VolumeOff className="size-5" />}

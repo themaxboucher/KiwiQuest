@@ -1,15 +1,22 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useNearestTask, useCourses, updateTask } from "@/lib/hooks";
 import { SPRITE_BY_TYPE } from "@/lib/sprites";
-import { TodoList } from "./TodoList";
 import { BlueParticleBurst } from "./BlueParticleBurst";
+
+const FOCUS_DURATIONS = [25, 60, 90] as const;
+
+function formatTime(seconds: number) {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+}
 
 const EXIT_DURATION_MS = 700;
 type TaskPreviewTask = NonNullable<ReturnType<typeof useNearestTask>>;
@@ -35,12 +42,51 @@ interface NewQuestProps {
   children: React.ReactNode;
 }
 
-function EmptyState() {
+function FocusTimerButtons({
+  onStartTimer,
+  label = "Focus timer",
+}: {
+  onStartTimer: (minutes: number) => void;
+  label?: string;
+}) {
   return (
-    <div className="flex items-center justify-center py-6">
+    <div className="space-y-2">
+      <p className="font-pixel text-[10px] text-blue-200/80 uppercase">
+        {label}
+      </p>
+      <div className="flex gap-2">
+        {FOCUS_DURATIONS.map((min) => (
+          <Button
+            key={min}
+            size="sm"
+            variant="secondary"
+            onClick={() => onStartTimer(min)}
+            className="flex-1 font-pixel text-[10px] pixel-borders"
+          >
+            {min} min
+          </Button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function EmptyState({
+  onStartTimer,
+}: {
+  onStartTimer: (minutes: number) => void;
+}) {
+  return (
+    <div className="flex flex-col items-center justify-center py-6 gap-4">
       <p className="font-pixel text-sm text-blue-200/80 text-center pixel-text-shadow">
         No upcoming quests in sight...
       </p>
+      <div className="w-full">
+        <FocusTimerButtons
+          onStartTimer={onStartTimer}
+          label="Start a focus session"
+        />
+      </div>
     </div>
   );
 }
@@ -48,9 +94,11 @@ function EmptyState() {
 function TaskPreview({
   task,
   onCompleteQuest,
+  onStartTimer,
 }: {
   task: TaskPreviewTask;
   onCompleteQuest?: (task: TaskPreviewTask) => void;
+  onStartTimer: (minutes: number) => void;
 }) {
   const courses = useCourses();
   const course = courses.find((c) => c.id === task.courseId);
@@ -109,13 +157,15 @@ function TaskPreview({
         </p>
       )}
 
-      <ScrollArea className="max-h-[200px]">
-        <TodoList taskId={task.id!} />
-      </ScrollArea>
+      <FocusTimerButtons onStartTimer={onStartTimer} />
 
       <Button
         size="sm"
-        onClick={() => (onCompleteQuest ? onCompleteQuest(task) : task.id && updateTask(task.id, { completed: true }))}
+        onClick={() =>
+          onCompleteQuest
+            ? onCompleteQuest(task)
+            : task.id && updateTask(task.id, { completed: true })
+        }
         className="w-full"
       >
         Complete Quest
@@ -129,7 +179,26 @@ export function NewQuest({ children }: NewQuestProps) {
   const [isExiting, setIsExiting] = useState(false);
   const [exitingTask, setExitingTask] = useState<TaskPreviewTask | null>(null);
   const [showParticles, setShowParticles] = useState(false);
+  const [endTime, setEndTime] = useState<number | null>(null);
+  const [, setTick] = useState(0);
   const task = useNearestTask();
+
+  const handleStartTimer = useCallback((minutes: number) => {
+    setEndTime(Date.now() + minutes * 60 * 1000);
+  }, []);
+
+  useEffect(() => {
+    if (endTime === null) return;
+    const id = setInterval(() => {
+      const remaining = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+      if (remaining <= 0) {
+        setEndTime(null);
+        return;
+      }
+      setTick((t) => t + 1);
+    }, 1000);
+    return () => clearInterval(id);
+  }, [endTime]);
 
   const handleCompleteQuest = useCallback(
     (completedTask: TaskPreviewTask) => {
@@ -143,11 +212,15 @@ export function NewQuest({ children }: NewQuestProps) {
         setExitingTask(null);
       }, EXIT_DURATION_MS);
     },
-    [isExiting]
+    [isExiting],
   );
 
   const showPopover = hovered || isExiting;
   const displayTask = isExiting && exitingTask ? exitingTask : task;
+  const remainingSeconds =
+    endTime !== null
+      ? Math.max(0, Math.floor((endTime - Date.now()) / 1000))
+      : 0;
 
   return (
     <div
@@ -155,6 +228,27 @@ export function NewQuest({ children }: NewQuestProps) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
+      {endTime !== null &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-99 w-screen h-screen min-w-full min-h-screen flex flex-col items-center justify-center gap-6 bg-blue-950/40 backdrop-blur-lg"
+            aria-modal
+            aria-label="Focus timer"
+          >
+            <p
+              className="font-pixel text-9xl text-white pixel-text-shadow tabular-nums"
+              aria-live="polite"
+            >
+              {formatTime(remainingSeconds)}
+            </p>
+            <button onClick={() => setEndTime(null)} className="font-pixel cursor-pointer">
+              Cancel
+            </button>
+          </div>,
+          document.body
+        )}
+
       <div className="relative">
         {children}
         {showParticles && (
@@ -172,9 +266,13 @@ export function NewQuest({ children }: NewQuestProps) {
         }`}
       >
         {displayTask ? (
-          <TaskPreview task={displayTask} onCompleteQuest={handleCompleteQuest} />
+          <TaskPreview
+            task={displayTask}
+            onCompleteQuest={handleCompleteQuest}
+            onStartTimer={handleStartTimer}
+          />
         ) : (
-          <EmptyState />
+          <EmptyState onStartTimer={handleStartTimer} />
         )}
       </div>
     </div>

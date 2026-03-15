@@ -90,7 +90,7 @@ function TaskList({ courseId }: { courseId: number }) {
 function ScrollDialogContent() {
   const courses = useCourses();
   const [selectedCourseId, setSelectedCourseId] = useState<number | undefined>(
-    undefined
+    undefined,
   );
   const tasks = useTasksForCourse(selectedCourseId);
 
@@ -102,7 +102,8 @@ function ScrollDialogContent() {
 
   const completedCount = tasks.filter((t) => t.completed).length;
   const totalCount = tasks.length;
-  const progressPercent = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
+  const progressPercent =
+    totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
 
   return (
     <>
@@ -123,7 +124,10 @@ function ScrollDialogContent() {
         </div>
       ) : (
         <>
-          <div className="flex gap-1 overflow-x-auto pb-1 -mx-1 px-1 justify-center" role="tablist">
+          <div
+            className="flex gap-1 overflow-x-auto pb-1 -mx-1 px-1 justify-center"
+            role="tablist"
+          >
             {courses.map((course) => (
               <button
                 key={course.id}
@@ -177,14 +181,14 @@ function ScrollDialogContent() {
 
 export function HutActionButtons() {
   return (
-    <div className="absolute top-4 right-4 z-20 flex gap-2">
+    <div className="absolute top-4 right-4 flex gap-2">
       <Dialog>
         <DialogTrigger
           render={
             <Button
               variant="ghost"
               size="icon-lg"
-              className="size-12 rounded-full bg-card/60 backdrop-blur-sm text-primary hover:bg-card/80"
+              className="size-12 rounded-full bg-card/60 backdrop-blur-sm text-primary hover:bg-card/80 relative z-20"
             />
           }
         >
