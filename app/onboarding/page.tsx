@@ -48,7 +48,7 @@ export default function OnboardingPage() {
       </div>
 
       {/* Step content — overlayed directly on the background. No key so Kiwi stays mounted when only paragraph changes (steps 1–4). */}
-      <div className="relative z-10 w-full max-w-180 px-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="relative z-10 w-full max-w-220 px-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
         {step === 0 && (
           <WelcomeStep
             onComplete={(name) => {

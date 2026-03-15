@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import Image from "next/image";
 import { ChevronRight } from "lucide-react";
+import { KiwizardSprite } from "@/components/KiwizardSprite";
 
 const TYPEWRITER_MS = 30;
 
@@ -12,7 +12,7 @@ const PARAGRAPHS = [
   () =>
     `I have been sent by his majesty the King Kiwi himself to guide you on your journey. I have travelled far and wide and have mastered the secret arts to bend time and space itself.`,
   () =>
-    `These powers I use to fight evil and bring peace and justice to all kiwis. In this relm, I am known as *KIWIZARD*, but my friends call me Jeff.`,
+    `These powers I use to fight evil and bring peace and justice to all kiwis. In this relm, I am known as KIWIZARD, but my friends call me Jeff.`,
   () =>
     `I have received word you carry documents enchanted by a very dark magic: course outlines. These scriptures tell of many foe who must be vanquished, lest peril befall us all. Quick, hand them here. My magic table can decipher them.`,
 ];
@@ -52,19 +52,13 @@ export function MascotGreeting({
 
   return (
     <div className="flex flex-col items-center gap-6">
-      <div className="flex justify-center items-center gap-12">
-        <Image
-          src="/sprites/kiwi-wizard.png"
-          alt="Kiwi the Wise"
-          width={550}
-          height={550}
-          className="pixelated animate-float drop-shadow-[0_0_12px_rgba(200,170,80,0.4)] -mx-[150px] pointer-events-none"
-        />
+      <div className="flex justify-center items-center gap-6">
+        <KiwizardSprite size={300} />
         <div
           className="p-4 w-full min-h-[120px] cursor-pointer"
           onClick={!isTypingDone ? skipToEnd : undefined}
         >
-          <p className="min-w-xl max-w-2xl min-h-full font-pixel text-white leading-loose">
+          <p className="min-w-[612px] max-w-2xl min-h-full font-pixel text-white leading-loose">
             {displayedText}
             {!isTypingDone && (
               <span className="animate-typewriter-cursor inline-block ml-0.5 w-2 h-3 bg-primary align-middle" />

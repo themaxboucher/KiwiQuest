@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { addCourse, addTask, clearAllData } from "@/lib/hooks";
 import { AlertCircle, ChevronRight } from "lucide-react";
 import Image from "next/image";
+import { KiwizardSprite } from "@/components/KiwizardSprite";
 
 const TYPEWRITER_MS = 30;
 
@@ -27,13 +28,7 @@ export function PostParseMessage({ onComplete }: { onComplete: () => void }) {
   return (
     <div className="flex flex-col items-center gap-6">
       <div className="flex justify-center items-center gap-12">
-        <Image
-          src="/sprites/kiwi-wizard.png"
-          alt="Kiwi the Wise"
-          width={550}
-          height={550}
-          className="pixelated animate-float drop-shadow-[0_0_12px_rgba(200,170,80,0.4)] -mx-[150px] pointer-events-none"
-        />
+        <KiwizardSprite size={900} />
         <div
           className="p-4 w-full min-h-[120px] cursor-pointer"
           onClick={!isDone ? () => setDisplayedLength(fullText.length) : undefined}
@@ -187,8 +182,8 @@ export function UploadOutlines({ onComplete }: UploadOutlinesProps) {
   };
 
   return (
-    <div className="flex flex-col gap-8 items-center">
-      <div className="text-center space-y-4">
+    <div className="flex flex-col gap-2 items-center">
+      <div className="text-center space-y-4 mb-12">
         <h2 className="font-pixel text-white leading-relaxed">
           Upload your course outlines.
         </h2>
@@ -221,7 +216,7 @@ export function UploadOutlines({ onComplete }: UploadOutlinesProps) {
           aria-label="Place course outline documents on the enchantment table"
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
-          className={`mt-10 relative flex flex-col items-center justify-center cursor-pointer transition-all duration-300 ${
+          className={`relative flex flex-col items-center justify-center cursor-pointer transition-all duration-300 ${
             !hovered ? "animate-float" : "scale-105"
           } ${
             dragOver
@@ -237,7 +232,7 @@ export function UploadOutlines({ onComplete }: UploadOutlinesProps) {
             input.click();
           }}
         >
-          <div className="relative w-[460px] h-[276px] sm:w-[500px] sm:h-[300px]">
+          <div className="relative w-[460px] h-[276px] sm:w-[500px] sm:h-[300px] ">
             <Image
               src="/sprites/enchantment-table.png"
               alt=""
@@ -261,8 +256,8 @@ export function UploadOutlines({ onComplete }: UploadOutlinesProps) {
                 <Image
                   src="/sprites/parchment.png"
                   alt=""
-                  width={120}
-                  height={144}
+                  width={72}
+                  height={88}
                   className="pixelated pointer-events-none"
                 />
                 <button
@@ -270,7 +265,7 @@ export function UploadOutlines({ onComplete }: UploadOutlinesProps) {
                     e.stopPropagation();
                     setFiles(files.filter((_, j) => j !== i));
                   }}
-                  className="absolute -top-1 right-5 w-4 h-4 flex items-center justify-center rounded-full bg-destructive/80 text-white font-pixel text-[8px] cursor-pointer hover:bg-destructive transition-colors"
+                  className="absolute -top-1 -right-3 w-4 h-4 flex items-center justify-center rounded-full bg-destructive/80 text-white font-pixel text-[8px] cursor-pointer hover:bg-destructive transition-colors"
                   aria-label={`Remove ${file.name}`}
                 >
                   ×

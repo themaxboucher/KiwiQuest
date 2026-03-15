@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { CrystalBallHoverCard } from "./CrystalBallDialog";
 import { HutActionButtons } from "./HutActionButtons";
+import { KiwizardSprite } from "@/components/KiwizardSprite";
 
 export function WizardHut() {
   return (
@@ -17,8 +18,15 @@ export function WizardHut() {
       <HutActionButtons />
 
       <div
+        className="absolute z-10"
+        style={{ bottom: "19%", left: "21%" }}
+      >
+        <KiwizardSprite size={130} />
+      </div>
+
+      <div
         className="absolute z-10 cursor-pointer transition-transform duration-200 focus-visible:outline-none hover:animate-glow-pulse"
-        style={{ top: "58%", left: "50%", transform: "translateX(-50%)" }}
+        style={{ top: "50%", left: "50%", transform: "translateX(-50%)" }}
       >
         <CrystalBallHoverCard>
           <Image

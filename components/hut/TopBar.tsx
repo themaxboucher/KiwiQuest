@@ -1,7 +1,7 @@
 "use client";
 
 import { useUser, useAllTasks } from "@/lib/hooks";
-import Image from "next/image";
+import { KiwizardSprite } from "@/components/KiwizardSprite";
 
 export function TopBar() {
   const user = useUser();
@@ -17,13 +17,7 @@ export function TopBar() {
 
   return (
     <div className="absolute top-0 left-0 right-0 z-20 flex items-center gap-4 px-4 py-2 bg-card/90 backdrop-blur-sm pixel-borders">
-      <Image
-        src="/sprites/kiwi-wizard.png"
-        alt="Kiwi"
-        width={32}
-        height={32}
-        className="pixelated"
-      />
+      <KiwizardSprite size={32} className="drop-shadow-none" />
 
       <div className="flex flex-col gap-0.5">
         <span className="font-pixel text-[8px] text-primary pixel-text-shadow">
