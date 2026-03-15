@@ -28,6 +28,23 @@ export function useAllTasks() {
   return useLiveQuery(() => db.tasks.toArray()) ?? [];
 }
 
+export function useNearestTask() {
+  return (
+    useLiveQuery(() =>
+      db.tasks
+        .filter((t) => !t.completed && !!t.dueDate)
+        .toArray()
+        .then((tasks) => {
+          const now = new Date().toISOString().slice(0, 10);
+          const upcoming = tasks
+            .filter((t) => t.dueDate! >= now)
+            .sort((a, b) => a.dueDate!.localeCompare(b.dueDate!));
+          return upcoming[0] ?? null;
+        })
+    ) ?? null
+  );
+}
+
 export function useTodosForTask(taskId: number | undefined) {
   return (
     useLiveQuery(
@@ -88,4 +105,10 @@ export async function bulkAddTasks(tasks: Omit<Task, "id">[]) {
 
 export async function bulkAddTodos(todos: Omit<Todo, "id">[]) {
   return db.todos.bulkAdd(todos);
+}
+
+export async function clearAllData() {
+  await db.todos.clear();
+  await db.tasks.clear();
+  await db.courses.clear();
 }

@@ -18,10 +18,10 @@ import type { Task } from "@/lib/db";
 
 const TYPE_COLORS: Record<string, string> = {
   assignment: "bg-blue-600/30 text-blue-300 border-blue-500/30",
-  quiz: "bg-green-600/30 text-green-300 border-green-500/30",
-  test: "bg-orange-600/30 text-orange-300 border-orange-500/30",
-  exam: "bg-red-600/30 text-red-300 border-red-500/30",
-  other: "bg-purple-600/30 text-purple-300 border-purple-500/30",
+  lab: "bg-green-600/30 text-green-300 border-green-500/30",
+  quiz: "bg-yellow-600/30 text-yellow-300 border-yellow-500/30",
+  midterm: "bg-orange-600/30 text-orange-300 border-orange-500/30",
+  final: "bg-red-600/30 text-red-300 border-red-500/30",
 };
 
 export function ConfirmTasks() {
@@ -179,10 +179,10 @@ export function ConfirmTasks() {
               className="pixel-borders bg-black/50 font-pixel text-[8px] px-2 py-1 text-white"
             >
               <option value="assignment">Assignment</option>
+              <option value="lab">Lab</option>
               <option value="quiz">Quiz</option>
-              <option value="test">Test</option>
-              <option value="exam">Exam</option>
-              <option value="other">Other</option>
+              <option value="midterm">Midterm</option>
+              <option value="final">Final</option>
             </select>
             <Input
               value={newTask.title}

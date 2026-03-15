@@ -127,7 +127,7 @@ export function TodoList({
         ) : (
           <>
             <Sparkles size={10} className="mr-1" />
-            Generate with AI
+            Generate
           </>
         )}
       </Button>

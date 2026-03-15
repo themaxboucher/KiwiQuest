@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { addCourse, addTask } from "@/lib/hooks";
+import { addCourse, addTask, clearAllData } from "@/lib/hooks";
 import { AlertCircle, ChevronRight } from "lucide-react";
 import Image from "next/image";
 
@@ -64,7 +64,7 @@ export function PostParseMessage({ onComplete }: { onComplete: () => void }) {
 interface ParsedTask {
   courseCode: string;
   title: string;
-  type: "assignment" | "quiz" | "test" | "exam" | "other";
+  type: "assignment" | "lab" | "quiz" | "midterm" | "final";
   dueDate: string | null;
   description: string;
   weight: number | null;
@@ -129,11 +129,13 @@ export function UploadOutlines({ onComplete }: UploadOutlinesProps) {
     setError(null);
 
     try {
+      await clearAllData();
+
       const createdCourses: { id: number; code: string }[] = [];
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         const code =
-          file.name.replace(/\.pdf$/i, "").trim() || `Course ${i + 1}`;
+          file.name.replace(/\.pdf$/i, "").split("-")[0].trim() || `Course ${i + 1}`;
         const id = (await addCourse({
           code,
           description: "",

@@ -1,12 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
-import { CrystalBallDialog } from "./CrystalBallDialog";
+import { CrystalBallHoverCard } from "./CrystalBallDialog";
+import { HutActionButtons } from "./HutActionButtons";
 
 export function WizardHut() {
-  const [dialogOpen, setDialogOpen] = useState(false);
-
   return (
     <div className="relative w-full h-full">
       <div
@@ -16,25 +14,22 @@ export function WizardHut() {
         }}
       />
 
-      <button
-        type="button"
-        onClick={() => setDialogOpen(true)}
+      <HutActionButtons />
+
+      <div
         className="absolute z-10 cursor-pointer transition-transform duration-200 focus-visible:outline-none hover:animate-glow-pulse"
         style={{ top: "58%", left: "50%", transform: "translateX(-50%)" }}
       >
-        <Image
-          src="/sprites/crystal_ball.png"
-          alt="Crystal Ball"
-          width={360}
-          height={360}
-          className="pixelated animate-glow-pulse"
-        />
-      </button>
-
-      <CrystalBallDialog
-        open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-      />
+        <CrystalBallHoverCard>
+          <Image
+            src="/sprites/crystal_ball.png"
+            alt="Crystal Ball"
+            width={360}
+            height={360}
+            className="pixelated animate-glow-pulse"
+          />
+        </CrystalBallHoverCard>
+      </div>
     </div>
   );
 }

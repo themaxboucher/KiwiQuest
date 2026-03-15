@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
       .map((c) => `- ${c.code}: ${c.description}`)
       .join("\n");
 
-    const systemPrompt = `You are a course outline parser. Extract all assignments, quizzes, tests, exams, and other graded deliverables from the provided course outline text.
+    const systemPrompt = `You are a course outline parser. Extract all assignments, labs, quizzes, midterms, finals, and other graded deliverables from the provided course outline text.
 
 The student is taking these courses:
 ${courseList}
@@ -40,7 +40,7 @@ ${courseList}
 Return a JSON array of task objects. Each task must have:
 - "courseCode": string (must match one of the course codes listed above)
 - "title": string (name of the deliverable)
-- "type": one of "assignment", "quiz", "test", "exam", or "other"
+- "type": one of "assignment", "lab", "quiz", "midterm", or "final"
 - "dueDate": string in ISO format (YYYY-MM-DD) or null if not specified
 - "description": string (brief description of the task)
 - "weight": number (percentage weight) or null if not specified

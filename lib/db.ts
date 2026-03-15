@@ -17,7 +17,7 @@ export interface Task {
   id?: number;
   courseId: number;
   title: string;
-  type: "assignment" | "quiz" | "test" | "exam" | "other";
+  type: "assignment" | "lab" | "quiz" | "midterm" | "final";
   dueDate?: string;
   description: string;
   weight?: number;
@@ -46,6 +46,29 @@ class ZooTechDB extends Dexie {
       tasks: "++id, courseId, type, completed",
       todos: "++id, taskId, order",
     });
+
+    this.version(2)
+      .stores({
+        user: "id, name",
+        courses: "++id, code, slotIndex",
+        tasks: "++id, courseId, type, completed",
+        todos: "++id, taskId, order",
+      })
+      .upgrade((tx) => {
+        const typeMap: Record<string, string> = {
+          test: "midterm",
+          exam: "final",
+          other: "assignment",
+        };
+        return tx
+          .table("tasks")
+          .toCollection()
+          .modify((task) => {
+            if (task.type in typeMap) {
+              task.type = typeMap[task.type];
+            }
+          });
+      });
   }
 }
 
