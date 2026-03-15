@@ -42,14 +42,11 @@ export default function Home() {
               KIWI QUEST
             </h1>
             <p className="font-pixel text-white leading-relaxed">
-              Your magical study companion
+              Gamify your studies
             </p>
           </div>
 
-          <Button
-            onClick={handleStart}
-            disabled={loading}
-          >
+          <Button onClick={handleStart} disabled={loading}>
             {loading ? "..." : "Start Adventure"}
           </Button>
         </div>

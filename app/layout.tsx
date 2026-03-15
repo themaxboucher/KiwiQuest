@@ -15,8 +15,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "ZOOTech - Pixel Quest",
-  description: "A fantasy-themed student task manager",
+  title: "Kiwi Quest",
+  description: "Gamify your studies",
 };
 
 export default function RootLayout({
